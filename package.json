@@ -1,0 +1,21 @@
+{
+  "name": "personal-budget-1",
+  "version": "1.0.0",
+  "description": "An API that allows clients to create and manage a personal budget",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha",
+    "start": "nodemon server.js"
+  },
+  "author": "simo_123123",
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "^11.7.2",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "morgan": "^1.10.0"
+  }
+}
