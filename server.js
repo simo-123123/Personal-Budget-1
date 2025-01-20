@@ -14,6 +14,9 @@ app.use(bodyParser.json());
 
 const PORT = process.env.PORT || 3000;
 
+const envelopesRouter = require('./envelopes');
+app.use('/api/envelopes', envelopesRouter);
+
 app.listen(PORT, () => {
     console.log('Server listening on port ' + PORT);
-})
+});
