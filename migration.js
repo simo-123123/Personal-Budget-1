@@ -1,4 +1,4 @@
-const db = require('./db-connect');
+const db = require('./db-utils/db-connect');
 db.prepare('DROP TABLE IF EXISTS Envelope').run();
 
 db.prepare(`CREATE TABLE Envelope (
