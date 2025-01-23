@@ -33,4 +33,9 @@ envelopesRouter.post('/', validateEnvelope, (req, res) => {
     res.status(201).json({ envelope: createdEnvelope });
 });
 
+envelopesRouter.put('/:id', validateEnvelope, (req, res) => {
+    const updatedEnvelope = updateEnvelope(req.params.id, req.newEnvelope);
+    res.json({ envelope: updatedEnvelope });
+});
+
 module.exports = envelopesRouter;
