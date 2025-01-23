@@ -22,4 +22,8 @@ envelopesRouter.get('/', (req, res) => {
     res.json({ envelopes: getAllEnvelopes() })
 });
 
+envelopesRouter.get('/:id', (req, res) => {
+    res.json({ envelope: req.envelope });
+});
+
 module.exports = envelopesRouter;
