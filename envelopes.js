@@ -5,7 +5,9 @@ const { getAllEnvelopes,
     getSingleEnvelope,
     createEnvelope,
     updateEnvelope,
-    deleteEnvelope } = require('./db-utils/db-functions');
+    deleteEnvelope } = require('./utils/db-functions');
+
+const validateEnvelope = require('./utils/validate-envelope');
 
 envelopesRouter.param('id', (req, res, next, id) => {
     const envelope = getSingleEnvelope(id);
@@ -16,7 +18,7 @@ envelopesRouter.param('id', (req, res, next, id) => {
 
     req.envelope = envelope;
     next();
-}) 
+});
 
 envelopesRouter.get('/', (req, res) => {
     res.json({ envelopes: getAllEnvelopes() })
