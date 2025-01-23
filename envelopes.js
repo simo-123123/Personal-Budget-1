@@ -38,4 +38,9 @@ envelopesRouter.put('/:id', validateEnvelope, (req, res) => {
     res.json({ envelope: updatedEnvelope });
 });
 
+envelopesRouter.delete('/:id', (req, res) => {
+    deleteEnvelope(req.params.id);
+    res.sendStatus(204);
+});
+
 module.exports = envelopesRouter;
