@@ -26,10 +26,32 @@ const deleteEnvelope = id => {
     db.prepare('DELETE FROM Envelope WHERE id = $id').run({ id });
 }
 
+const increaseBudget = (envelope, amount) => {
+    const { id, budget } = envelope;
+    const newBudget = budget + amount;
+    
+    if (newBudget < 0) return;
+
+    db.prepare('UPDATE Envelope SET budget = $newBudget WHERE id = $id').run({ newBudget, id });
+    return getSingleEnvelope(id);
+}
+
+const spendBudget = (envelope, amount) => increaseBudget(envelope, -amount);
+
+const transferBudget = (from, to, amount) => {
+    return {
+        from: spendBudget(from, amount),
+        to: increaseBudget(to, amount)
+    }
+}
+
 module.exports = {
     getAllEnvelopes,
     getSingleEnvelope,
     createEnvelope,
     updateEnvelope,
-    deleteEnvelope
+    deleteEnvelope,
+    increaseBudget,
+    spendBudget,
+    transferBudget
 }
