@@ -7,7 +7,7 @@ const { getAllEnvelopes,
     updateEnvelope,
     deleteEnvelope } = require('./utils/db-functions');
 
-const validateEnvelope = require('./utils/validate-envelope');
+const { validateBody, validateEnvelope, validateAmount } = require('./utils/validation');
 
 envelopesRouter.param('id', (req, res, next, id) => {
     const envelope = getSingleEnvelope(id);
@@ -28,12 +28,12 @@ envelopesRouter.get('/:id', (req, res) => {
     res.json({ envelope: req.envelope });
 });
 
-envelopesRouter.post('/', validateEnvelope, (req, res) => {
+envelopesRouter.post('/', validateBody, validateEnvelope, (req, res) => {
     const createdEnvelope = createEnvelope(req.newEnvelope);
     res.status(201).json({ envelope: createdEnvelope });
 });
 
-envelopesRouter.put('/:id', validateEnvelope, (req, res) => {
+envelopesRouter.put('/:id', validateBody, validateEnvelope, (req, res) => {
     const updatedEnvelope = updateEnvelope(req.params.id, req.newEnvelope);
     res.json({ envelope: updatedEnvelope });
 });
