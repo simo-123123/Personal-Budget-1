@@ -16,7 +16,7 @@ envelopesRouter.param('id', (req, res, next, id) => {
     const envelope = getSingleEnvelope(id);
 
     if (!envelope) {
-        return res.sendStatus(404);
+        return res.status(404).json({ message: 'Envelope not found' });
     }
 
     req.envelope = envelope;
@@ -43,16 +43,11 @@ envelopesRouter.put('/:id', validateBody, validateEnvelope, (req, res) => {
 
 envelopesRouter.delete('/:id', (req, res) => {
     deleteEnvelope(req.params.id);
-    res.sendStatus(204);
+    res.status(204).send();
 });
 
 envelopesRouter.post('/:id/increase', validateBody, validateAmount, (req, res) => {
     const updatedEnvelope = increaseBudget(req.envelope, req.amount);
-
-    if (!updatedEnvelope) {
-        return res.sendStatus(400);
-    }
-
     res.json({ envelope: updatedEnvelope });
 });
 
@@ -60,7 +55,7 @@ envelopesRouter.post('/:id/spend', validateBody, validateAmount, (req, res) => {
     const updatedEnvelope = spendBudget(req.envelope, req.amount);
 
     if (!updatedEnvelope) {
-        return res.sendStatus(400);
+        return res.status(400).json({ message: 'Insufficient funds' });
     }
 
     res.json({ envelope: updatedEnvelope });
@@ -71,13 +66,13 @@ envelopesRouter.post('/transfer/:from/:to', validateBody, validateAmount, (req, 
     const to = getSingleEnvelope(req.params.to);
 
     if (!from || !to) {
-        return res.sendStatus(404);
+        return res.status(404).json({ message: 'Envelope(s) not found' });
     }
 
     const updatedEnvelopes = transferBudget(from, to, req.amount);
 
     if (!updatedEnvelopes.from || !updatedEnvelopes.to) {
-        return res.sendStatus(400);
+        return res.status(400).json({ message: 'Insufficient funds' });
     }
 
     res.json(updatedEnvelopes);

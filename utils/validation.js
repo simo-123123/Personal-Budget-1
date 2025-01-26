@@ -1,6 +1,6 @@
 const validateBody = (req, res, next) => {
     if (!req.body) {
-        return res.sendStatus(400);
+        return res.status(400).json({ message: 'Missing request body' });
     }
 
     next();
@@ -10,7 +10,7 @@ const validateEnvelope = (req, res, next) => {
     const { envelope } = req.body;
     
     if (!envelope || typeof envelope.title !== 'string' || envelope.title === '' || typeof envelope.budget !== 'number' || envelope.budget < 0) {
-        return res.sendStatus(400);
+        return res.status(400).json({ message: 'Invalid request body' });
     }
 
     req.newEnvelope = envelope;
@@ -21,7 +21,7 @@ const validateAmount = (req, res, next) => {
     const { amount } = req.body;
 
     if (!amount || typeof amount !== 'number' || amount <= 0) {
-        return res.sendStatus(400);
+        return res.status(400).json({ message: 'Missing or invalid amount' });
     }
 
     req.amount = amount;
