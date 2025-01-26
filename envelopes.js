@@ -6,7 +6,8 @@ const { getAllEnvelopes,
     createEnvelope,
     updateEnvelope,
     deleteEnvelope,
-    increaseBudget } = require('./utils/db-functions');
+    increaseBudget,
+    spendBudget } = require('./utils/db-functions');
 
 const { validateBody, validateEnvelope, validateAmount } = require('./utils/validation');
 
@@ -46,6 +47,11 @@ envelopesRouter.delete('/:id', (req, res) => {
 
 envelopesRouter.post('/:id/increase', validateBody, validateAmount, (req, res) => {
     const updatedEnvelope = increaseBudget(req.envelope, req.amount);
+    res.status(201).json({ envelope: updatedEnvelope });
+});
+
+envelopesRouter.post('/:id/spend', validateBody, validateAmount, (req, res) => {
+    const updatedEnvelope = spendBudget(req.envelope, req.amount);
     res.status(201).json({ envelope: updatedEnvelope });
 });
 
