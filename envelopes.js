@@ -7,7 +7,8 @@ const { getAllEnvelopes,
     updateEnvelope,
     deleteEnvelope,
     increaseBudget,
-    spendBudget } = require('./utils/db-functions');
+    spendBudget, 
+    transferBudget} = require('./utils/db-functions');
 
 const { validateBody, validateEnvelope, validateAmount } = require('./utils/validation');
 
@@ -52,7 +53,7 @@ envelopesRouter.post('/:id/increase', validateBody, validateAmount, (req, res) =
         return res.sendStatus(400);
     }
 
-    res.status(201).json({ envelope: updatedEnvelope });
+    res.json({ envelope: updatedEnvelope });
 });
 
 envelopesRouter.post('/:id/spend', validateBody, validateAmount, (req, res) => {
@@ -61,8 +62,25 @@ envelopesRouter.post('/:id/spend', validateBody, validateAmount, (req, res) => {
     if (!updatedEnvelope) {
         return res.sendStatus(400);
     }
-    
-    res.status(201).json({ envelope: updatedEnvelope });
+
+    res.json({ envelope: updatedEnvelope });
+});
+
+envelopesRouter.post('/transfer/:from/:to', validateBody, validateAmount, (req, res) => {
+    const from = getSingleEnvelope(req.params.from);
+    const to = getSingleEnvelope(req.params.to);
+
+    if (!from || !to) {
+        return res.sendStatus(404);
+    }
+
+    const updatedEnvelopes = transferBudget(from, to, req.amount);
+
+    if (!updatedEnvelopes.from || !updatedEnvelopes.to) {
+        return res.sendStatus(400);
+    }
+
+    res.json(updatedEnvelopes);
 });
 
 module.exports = envelopesRouter;
