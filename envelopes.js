@@ -47,11 +47,21 @@ envelopesRouter.delete('/:id', (req, res) => {
 
 envelopesRouter.post('/:id/increase', validateBody, validateAmount, (req, res) => {
     const updatedEnvelope = increaseBudget(req.envelope, req.amount);
+
+    if (!updatedEnvelope) {
+        return res.sendStatus(400);
+    }
+
     res.status(201).json({ envelope: updatedEnvelope });
 });
 
 envelopesRouter.post('/:id/spend', validateBody, validateAmount, (req, res) => {
     const updatedEnvelope = spendBudget(req.envelope, req.amount);
+
+    if (!updatedEnvelope) {
+        return res.sendStatus(400);
+    }
+    
     res.status(201).json({ envelope: updatedEnvelope });
 });
 
