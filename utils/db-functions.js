@@ -45,6 +45,16 @@ const transferBudget = (from, to, amount) => {
     }
 }
 
+const distributeBudget = (envelopes, amount) => {
+    const amountForEach = Math.floor(amount / envelopes.length * 100) / 100;
+    const updatedEnvelopes = envelopes.map(envelope => increaseBudget(envelope, amountForEach));
+
+    return {
+        updatedEnvelopes,
+        remainder: amount - (amountForEach * envelopes.length)
+    }
+}
+
 module.exports = {
     getAllEnvelopes,
     getSingleEnvelope,
@@ -53,5 +63,6 @@ module.exports = {
     deleteEnvelope,
     increaseBudget,
     spendBudget,
-    transferBudget
+    transferBudget,
+    distributeBudget
 }
