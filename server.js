@@ -23,6 +23,11 @@ const server = app.listen(PORT, () => {
     console.log('Server listening on port ' + PORT);
 });
 
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: 'Internal server error' });
+});
+
 // Gracefully shuts down everything when Ctrl+C is pressed
 process.on('SIGINT', () => {
     const db = require('./utils/db-connect');
