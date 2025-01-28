@@ -1,3 +1,5 @@
+const roundDown = require('./round-down');
+
 const validateBody = (req, res, next) => {
     if (!req.body) {
         return res.status(400).json({ message: 'Missing request body' });
@@ -13,6 +15,10 @@ const validateEnvelope = (req, res, next) => {
         return res.status(400).json({ message: 'Invalid request body' });
     }
 
+    if (roundDown(envelope.budget) !== envelope.budget) {
+        return res.status(400).json({ message: 'The provided budget has more than 2 decimal places' });
+    }
+
     req.newEnvelope = envelope;
     next();
 }
@@ -22,6 +28,10 @@ const validateAmount = (req, res, next) => {
 
     if (!amount || typeof amount !== 'number' || amount <= 0) {
         return res.status(400).json({ message: 'Missing or invalid amount' });
+    }
+
+    if (roundDown(amount) !== amount) {
+        return res.status(400).json({ message: 'The provided amount has more than 2 decimal places' });
     }
 
     req.amount = amount;

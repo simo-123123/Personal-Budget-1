@@ -1,11 +1,18 @@
 const db = require('./db-connect');
+const roundDown = require('./round-down');
 
 const getAllEnvelopes = () => {
-    return db.prepare('SELECT * FROM Envelope').all();
+    const allEnvelopes = db.prepare('SELECT * FROM Envelope').all();
+    return allEnvelopes.map(envelope => {
+        envelope.budget = roundDown(envelope.budget);
+        return envelope;
+    });
 }
 
 const getSingleEnvelope = id => {
-    return db.prepare('SELECT * FROM Envelope WHERE id = $id').get({ id });
+    const envelope = db.prepare('SELECT * FROM Envelope WHERE id = $id').get({ id });
+    envelope.budget = roundDown(envelope.budget);
+    return envelope;
 }
 
 const createEnvelope = envelope => {
@@ -46,12 +53,12 @@ const transferBudget = (from, to, amount) => {
 }
 
 const distributeBudget = (envelopes, amount) => {
-    const amountForEach = Math.floor(amount / envelopes.length * 100) / 100;
+    const amountForEach = roundDown(amount / envelopes.length);
     const updatedEnvelopes = envelopes.map(envelope => increaseBudget(envelope, amountForEach));
 
     return {
         updatedEnvelopes,
-        remainder: amount - (amountForEach * envelopes.length)
+        remainder: roundDown(amount - (amountForEach * envelopes.length))
     }
 }
 
