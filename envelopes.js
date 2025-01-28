@@ -8,9 +8,13 @@ const { getAllEnvelopes,
     deleteEnvelope,
     increaseBudget,
     spendBudget, 
-    transferBudget} = require('./utils/db-functions');
+    transferBudget,
+    distributeBudget } = require('./utils/db-functions');
 
-const { validateBody, validateEnvelope, validateAmount } = require('./utils/validation');
+const { validateBody,
+    validateEnvelope,
+    validateAmount,
+    validateEnvelopesArray } = require('./utils/validation');
 
 envelopesRouter.param('id', (req, res, next, id) => {
     try {
@@ -105,6 +109,26 @@ envelopesRouter.post('/transfer/:from/:to', validateBody, validateAmount, (req, 
         }
 
         res.json(updatedEnvelopes);
+    } catch(err) {
+        next(err);
+    }
+});
+
+envelopesRouter.post('/distribute', validateBody, validateAmount, validateEnvelopesArray, (req, res, next) => {
+    try {
+        const envelopesArray = [];
+        for (const id of req.envelopes) {
+            const envelope = getSingleEnvelope(id);
+
+            if (!envelope) {
+                return res.status(404).json({ message: 'One or more envelopes weren\'t found' });
+            }
+
+            envelopesArray.push(envelope);
+        }
+
+        const responseBody = distributeBudget(envelopesArray, req.amount);
+        res.json(responseBody);
     } catch(err) {
         next(err);
     }
