@@ -1,30 +1,32 @@
 const db = require('./db-connect');
-const roundDown = require('./round-down');
+const roundToDecimal = require('./round-to-decimal');
 
 const getAllEnvelopes = () => {
     const allEnvelopes = db.prepare('SELECT * FROM Envelope').all();
     return allEnvelopes.map(envelope => {
-        envelope.budget = roundDown(envelope.budget);
+        envelope.budget = roundToDecimal(envelope.budget / 100);
         return envelope;
     });
 }
 
 const getSingleEnvelope = id => {
     const envelope = db.prepare('SELECT * FROM Envelope WHERE id = $id').get({ id });
-    envelope.budget = roundDown(envelope.budget);
+    if (!envelope) return;
+
+    envelope.budget = roundToDecimal(envelope.budget / 100);
     return envelope;
 }
 
 const createEnvelope = envelope => {
     const { title, budget } = envelope;
-    const insert = db.prepare('INSERT INTO Envelope (title, budget) VALUES ($title, $budget)').run({ title, budget });
+    const insert = db.prepare('INSERT INTO Envelope (title, budget) VALUES ($title, $budget)').run({ title, budget: Math.round(budget * 100) });
 
     return getSingleEnvelope(insert.lastInsertRowid);
 }
 
 const updateEnvelope = (id, newEnvelope) => {
     const { title, budget } = newEnvelope;
-    db.prepare('UPDATE Envelope SET title = $title, budget = $budget WHERE id = $id').run({ title, budget, id });
+    db.prepare('UPDATE Envelope SET title = $title, budget = $budget WHERE id = $id').run({ title, budget: Math.round(budget * 100), id });
 
     return getSingleEnvelope(id);
 }
@@ -35,7 +37,7 @@ const deleteEnvelope = id => {
 
 const increaseBudget = (envelope, amount) => {
     const { id, budget } = envelope;
-    const newBudget = budget + amount;
+    const newBudget = Math.round((budget + amount) * 100);
     
     if (newBudget < 0) return;
 
@@ -53,13 +55,15 @@ const transferBudget = (from, to, amount) => {
 }
 
 const distributeBudget = (envelopes, amount) => {
-    const amountForEach = roundDown(amount / envelopes.length);
-    const updatedEnvelopes = envelopes.map(envelope => increaseBudget(envelope, amountForEach));
+    const amountForEach = Math.floor(amount / envelopes.length * 100) / 100;
+    const remainder = roundToDecimal(amount - (amountForEach * envelopes.length));
 
-    return {
-        updatedEnvelopes,
-        remainder: roundDown(amount - (amountForEach * envelopes.length))
+    if (remainder < 0) {
+        throw new Error('Remainder is negative');
     }
+
+    const updatedEnvelopes = envelopes.map(envelope => increaseBudget(envelope, amountForEach));
+    return { updatedEnvelopes, remainder }
 }
 
 module.exports = {
