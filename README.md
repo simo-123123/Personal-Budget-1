@@ -135,3 +135,6 @@ Example response body:
     // would return a remainder of 0.01)
     "remainder": 0
 }
+```
+## Database
+This project uses a SQLite database to store the envelopes and the [better-sqlite3](https://www.npmjs.com/package/better-sqlite3) package to interact with it inside the Express app. To prevent errors caused by inexact, floating-point storage, the amount of money in each envelope is stored **multiplied by 100 as an integer.** The conversion is handled directly in `utils/db-functions.js`, and all numbers are rounded to also prevent appoximation errors in the JavaScript code itself.
