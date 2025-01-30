@@ -13,7 +13,7 @@ This is a Portfolio Project from the **Codecademy Back End Engineer Career Path.
 ## Installation
 To run this project, you must have Node.js installed on your machine. The project was built using Node.js 22, so older versions could cause issues.
 
-To start the server, run `npm install` to install the dependencies and start the app using `node server.js`. You can also use `npm start` to run the program with [nodemon](https://www.npmjs.com/package/nodemon).  
+To start the server, first run `npm install` to install the dependencies, then create the database by running `node migration.js` and start the app using `node server.js`. You can also use `npm start` to run the program with [nodemon](https://www.npmjs.com/package/nodemon).  
 
 By default, the app listens on port 3000. You can change this by simply setting the `PORT` environment variable in your `.env` file. You can also enable [morgan](https://www.npmjs.com/package/morgan) logging by setting `NODE_ENV` to `development`
 
