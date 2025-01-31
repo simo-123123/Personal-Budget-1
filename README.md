@@ -22,7 +22,7 @@ By default, the app listens on port 3000. You can change this by simply setting 
 - **GET /api/envelopes**  
 Retrieves all envelopes in the database.  
 Example response body:
-```json
+```js
 {
     "envelopes": [
         {
@@ -44,9 +44,9 @@ Example response body:
 }
 ```
 - **GET /api/envelopes/:id**  
-Retrieves the envelope with the given ID.
+Retrieves the envelope with the given ID.  
 Example response body for GET /api/envelopes/3:
-```json
+```js
 {
     "envelope": {
         "id": 3,
@@ -56,9 +56,9 @@ Example response body for GET /api/envelopes/3:
 }
 ```
 - **POST /api/envelopes**  
-Inserts a new envelope in the database and returns it in the response body.
+Inserts a new envelope in the database and returns it in the response body.  
 Example request body (both properties are required):
-```json
+```js
 {
     "envelope": {
         "title": "Fun", // non-empty string
@@ -73,9 +73,9 @@ Replaces the envelope with the specified ID with the one provided in the request
 Deletes the envelope with the given ID.  
 
 - **POST /api/envelopes/:id/increase**  
-Puts the specified amount of money inside the envelope with the given ID. Returns the updated envelope.
-Example request body for POST /increase, /spend and /transfer
-```json
+Puts the specified amount of money inside the envelope with the given ID. Returns the updated envelope.  
+Example request body for POST /increase, /spend and /transfer:
+```js
 {
     "amount": 100 // higher than 0
 }
@@ -84,9 +84,9 @@ Example request body for POST /increase, /spend and /transfer
 Takes the specified amount of money out of the envelope with the given ID. Returns the updated envelope.  
 
 - **POST /api/envelopes/transfer/:from/:to**  
-Transfers the specified amount of money from the first envelope (:from) to the second one (:to).
-Example response body for POST /api/envelopes/transfer/3/2 (amount: 100)
-```json
+Transfers the specified amount of money from the first envelope (:from) to the second one (:to).  
+Example response body for POST /api/envelopes/transfer/3/2 (amount: 100):
+```js
 {
     "from": {
         "title": "Subscriptions",
@@ -99,9 +99,9 @@ Example response body for POST /api/envelopes/transfer/3/2 (amount: 100)
 }
 ```
 - **POST /api/envelopes/distribute**  
-Envenly distributes an amount of money between multiple envelopes.
+Envenly distributes an amount of money between multiple envelopes.  
 Example request body:
-```json
+```js
 {
     // Array of envelope IDs to distribute the amount to 
     "envelopes": [1, 2, 3],
@@ -110,7 +110,7 @@ Example request body:
 }
 ```
 Example response body:
-```json
+```js
 {
     // Array of updated envelopes
     "envelopes": [
